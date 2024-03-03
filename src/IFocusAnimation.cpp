@@ -34,23 +34,25 @@ void IFocusAnimation::init(HANDLE pHandle, std::string animationName) {
 }
 
 void IFocusAnimation::onWindowFocus(CWindow *pWindow, HANDLE pHandle) {
+  Debug::log(LOG, "[hyprfocus] Base callback for animation: {}",
+             m_szAnimationName);
   m_sFocusInAnimConfig.internalBezier =
-      **(Hyprlang::STRING *const *)HyprlandAPI::getConfigValue(
-            pHandle, configPrefix() + "in_bezier")
-            ->getDataStaticPtr();
+      *(Hyprlang::STRING const *)(HyprlandAPI::getConfigValue(
+                                      pHandle, configPrefix() + "in_bezier")
+                                      ->getDataStaticPtr());
   m_sFocusInAnimConfig.internalSpeed =
-      **(Hyprlang::FLOAT *const *)HyprlandAPI::getConfigValue(
-            pHandle, configPrefix() + "in_speed")
-            ->getDataStaticPtr();
+      *(Hyprlang::FLOAT const *)(HyprlandAPI::getConfigValue(
+                                     pHandle, configPrefix() + "in_speed")
+                                     ->getDataStaticPtr());
 
   m_sFocusOutAnimConfig.internalBezier =
-      **(Hyprlang::STRING *const *)HyprlandAPI::getConfigValue(
-            pHandle, configPrefix() + "out_bezier")
-            ->getDataStaticPtr();
+      *(Hyprlang::STRING const *)(HyprlandAPI::getConfigValue(
+                                      pHandle, configPrefix() + "out_bezier")
+                                      ->getDataStaticPtr());
   m_sFocusOutAnimConfig.internalSpeed =
-      **(Hyprlang::FLOAT *const *)HyprlandAPI::getConfigValue(
-            pHandle, configPrefix() + "out_speed")
-            ->getDataStaticPtr();
+      *(Hyprlang::FLOAT const *)(HyprlandAPI::getConfigValue(
+                                     pHandle, configPrefix() + "out_speed")
+                                     ->getDataStaticPtr());
   Debug::log(LOG, "[hyprfocus] Focus in bezier: {}",
              m_sFocusInAnimConfig.internalBezier);
   Debug::log(LOG, "[hyprfocus] Focus in speed: {}",
