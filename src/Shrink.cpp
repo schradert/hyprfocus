@@ -23,6 +23,8 @@ void CShrink::onWindowFocus(CWindow *pWindow, HANDLE pHandle) {
       (Hyprlang::FLOAT *const *)getConfigValue(pHandle, "shrink_percentage")
           ->getDataStaticPtr();
 
+  Debug::log(LOG, "[hyprfocus] Shrink percentage: {}", **SHRINKPERCENTAGE);
+
   pWindow->m_vRealSize.setConfig(&m_sFocusOutAnimConfig);
   pWindow->m_vRealPosition.setConfig(&m_sFocusOutAnimConfig);
 

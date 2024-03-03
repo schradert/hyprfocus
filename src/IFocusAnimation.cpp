@@ -5,6 +5,8 @@
 
 void IFocusAnimation::init(HANDLE pHandle, std::string animationName) {
   m_szAnimationName = animationName;
+  Debug::log(LOG, "[hyprfocus] Initializing focus animation: {}",
+             animationName);
 
   HyprlandAPI::addConfigValue(pHandle, configPrefix() + "in_bezier",
                               Hyprlang::STRING{"default"});
@@ -49,14 +51,25 @@ void IFocusAnimation::onWindowFocus(CWindow *pWindow, HANDLE pHandle) {
       **(Hyprlang::FLOAT *const *)HyprlandAPI::getConfigValue(
             pHandle, configPrefix() + "out_speed")
             ->getDataStaticPtr();
+  Debug::log(LOG, "[hyprfocus] Focus in bezier: {}",
+             m_sFocusInAnimConfig.internalBezier);
+  Debug::log(LOG, "[hyprfocus] Focus in speed: {}",
+             m_sFocusInAnimConfig.internalSpeed);
+  Debug::log(LOG, "[hyprfocus] Focus out bezier: {}",
+             m_sFocusOutAnimConfig.internalBezier);
+  Debug::log(LOG, "[hyprfocus] Focus out speed: {}",
+             m_sFocusOutAnimConfig.internalSpeed);
 }
 
 void IFocusAnimation::addConfigValue(HANDLE pHandle, std::string name,
                                      Hyprlang::CConfigValue sValue) {
   HyprlandAPI::addConfigValue(pHandle, configPrefix() + name, sValue);
+  Debug::log(LOG, "[hyprfocus] Added config value: {}", configPrefix() + name);
 }
 
 Hyprlang::CConfigValue *IFocusAnimation::getConfigValue(HANDLE pHandle,
                                                         std::string name) {
+  Debug::log(LOG, "[hyprfocus] Getting config value: {}",
+             configPrefix() + name);
   return HyprlandAPI::getConfigValue(pHandle, configPrefix() + name);
 }
