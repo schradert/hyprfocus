@@ -9,6 +9,7 @@ class IFocusAnimation {
 public:
   virtual void onWindowFocus(CWindow *pWindow, HANDLE pHandle);
   virtual void init(HANDLE pHandle, std::string animationName);
+  virtual void setup(HANDLE pHandle, std::string animationName);
 
   void addConfigValue(HANDLE pHandle, std::string name,
                       Hyprlang::CConfigValue sValue);

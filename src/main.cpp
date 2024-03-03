@@ -1,10 +1,9 @@
 #define WLR_USE_UNSTABLE
 
+#include "globals.hpp"
 #include <hyprland/src/plugins/PluginAPI.hpp>
 
 #include <hyprland/src/debug/Log.hpp>
-
-inline HANDLE PHANDLE = nullptr;
 
 #include <hyprland/src/Compositor.hpp>
 #include <hyprland/src/Window.hpp>
@@ -13,42 +12,36 @@ inline HANDLE PHANDLE = nullptr;
 #include "Flash.hpp"
 #include "Shrink.hpp"
 
-#include <iostream>
-
 CWindow *g_pPreviouslyFocusedWindow = nullptr;
 bool g_bMouseWasPressed = false;
 
 std::unordered_map<std::string, std::unique_ptr<IFocusAnimation>> g_mAnimations;
 
 void flashWindow(CWindow *pWindow) {
-  Debug::log(LOG, "[hyprfocus] Flashing window");
-  static auto *const configValue =
-      (Hyprlang::STRING const *)HyprlandAPI::getConfigValue(
-          PHANDLE, "plugin:hyprfocus:focus_animation")
-          ->getDataStaticPtr();
-  Debug::log(LOG, "[hyprfocus] Animation: {}", *configValue);
+  hyprfocus_log(LOG, "Flashing window");
+  hyprfocus_log(LOG, "Animation: {}", g_sAnimationType);
 
-  auto it = g_mAnimations.find(*configValue);
+  auto it = g_mAnimations.find(g_sAnimationType);
   if (it != g_mAnimations.end()) {
-    Debug::log(LOG, "[hyprfocus] Calling onWindowFocus for animation {}",
-               *configValue);
+    hyprfocus_log(LOG, "Calling onWindowFocus for animation {}",
+                  g_sAnimationType);
     it->second->onWindowFocus(pWindow, PHANDLE);
   }
 }
 
 void flashCurrentWindow(std::string) {
-  Debug::log(LOG, "[hyprfocus] Flashing current window");
+  hyprfocus_log(LOG, "Flashing current window");
   static auto *const PHYPRFOCUSENABLED =
       (Hyprlang::INT *const *)HyprlandAPI::getConfigValue(
           PHANDLE, "plugin:hyprfocus:enabled")
           ->getDataStaticPtr();
   if (!*PHYPRFOCUSENABLED) {
-    Debug::log(LOG, "[hyprfocus] HyprFocus is disabled");
+    hyprfocus_log(LOG, "HyprFocus is disabled");
     return;
   }
 
   if (g_pPreviouslyFocusedWindow == nullptr) {
-    Debug::log(LOG, "[hyprfocus] No previously focused window");
+    hyprfocus_log(LOG, "No previously focused window");
     return;
   }
 
@@ -57,25 +50,25 @@ void flashCurrentWindow(std::string) {
 
 static void onActiveWindowChange(void *self, std::any data) {
   try {
-    Debug::log(LOG, "[hyprfocus] Active window changed");
+    hyprfocus_log(LOG, "Active window changed");
     auto *const PWINDOW = std::any_cast<CWindow *>(data);
     static auto *const PHYPRFOCUSENABLED =
         (Hyprlang::INT *const *)HyprlandAPI::getConfigValue(
             PHANDLE, "plugin:hyprfocus:enabled")
             ->getDataStaticPtr();
 
-    if (!*PHYPRFOCUSENABLED) {
-      Debug::log(LOG, "[hyprfocus] HyprFocus is disabled");
+    if (!**PHYPRFOCUSENABLED) {
+      hyprfocus_log(LOG, "HyprFocus is disabled");
       return;
     }
 
     if (PWINDOW == nullptr) {
-      Debug::log(LOG, "[hyprfocus] Window is null");
+      hyprfocus_log(LOG, "Window is null");
       return;
     }
 
     if (PWINDOW == g_pPreviouslyFocusedWindow) {
-      Debug::log(LOG, "[hyprfocus] Window is the same as the previous one");
+      hyprfocus_log(LOG, "Window is the same as the previous one");
       return;
     }
 
@@ -83,9 +76,9 @@ static void onActiveWindowChange(void *self, std::any data) {
     g_pPreviouslyFocusedWindow = PWINDOW;
 
   } catch (std::bad_any_cast &e) {
-    Debug::log(ERR, "[hyprfocus] Cast Error: {}", e.what());
+    hyprfocus_log(ERR, "Cast Error: {}", e.what());
   } catch (std::exception &e) {
-    Debug::log(ERR, "[hyprfocus] Error: {}", e.what());
+    hyprfocus_log(ERR, "Error: {}", e.what());
   }
 }
 
@@ -96,9 +89,9 @@ static void onMouseButton(void *self, std::any data) {
     g_bMouseWasPressed = PWLRMOUSEBUTTONEVENT->state == WLR_BUTTON_PRESSED;
 
   } catch (std::bad_any_cast &e) {
-    Debug::log(ERR, "[hyprfocus] Cast Error: {}", e.what());
+    hyprfocus_log(ERR, "Cast Error: {}", e.what());
   } catch (std::exception &e) {
-    Debug::log(ERR, "[hyprfocus] Error: {}", e.what());
+    hyprfocus_log(ERR, "Error: {}", e.what());
   }
 }
 
@@ -121,24 +114,43 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
 
   for (auto &[name, pAnimation] : g_mAnimations) {
     pAnimation->init(PHANDLE, name);
-    Debug::log(LOG, "[hyprfocus] Registered animation: {}", name);
+    hyprfocus_log(LOG, "Registered animation: {}", name);
   }
 
   HyprlandAPI::reloadConfig();
-  Debug::log(LOG, "[hyprfocus] Reloaded config");
+  g_pConfigManager->tick();
+  hyprfocus_log(LOG, "Reloaded config");
 
+  // Declare globals
+  static const auto *focusAnimation =
+      (Hyprlang::STRING const *)(HyprlandAPI::getConfigValue(
+                                     PHANDLE,
+                                     "plugin:hyprfocus:focus_animation")
+                                     ->getDataStaticPtr());
+  g_sAnimationType = *focusAnimation;
+
+  // Setup animations
+  for (auto &[name, pAnimation] : g_mAnimations) {
+    pAnimation->setup(PHANDLE, name);
+    hyprfocus_log(LOG, "Setup animation: {}", name);
+  }
+
+  // Register callbacks
   HyprlandAPI::registerCallbackDynamic(
       PHANDLE, "activeWindow",
       [&](void *self, SCallbackInfo &info, std::any data) {
         onActiveWindowChange(self, data);
       });
-  Debug::log(LOG, "[hyprfocus] Registered active window change callback");
+  hyprfocus_log(LOG, "Registered active window change callback");
+
   HyprlandAPI::registerCallbackDynamic(
       PHANDLE, "mouseButton",
       [&](void *self, SCallbackInfo &info, std::any data) {
         onMouseButton(self, data);
       });
-  Debug::log(LOG, "[hyprfocus] Registered mouse button callback");
+  hyprfocus_log(LOG, "Registered mouse button callback");
+
+  HyprlandAPI::reloadConfig();
 
   return {"hyprfocus", "animate windows on focus", "Vortex", "2.0"};
 }
