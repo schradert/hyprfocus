@@ -29,8 +29,11 @@ void flashWindow(CWindow *pWindow) {
   Debug::log(LOG, "[hyprfocus] Animation: {}", *configValue);
 
   auto it = g_mAnimations.find(*configValue);
-  if (it != g_mAnimations.end())
+  if (it != g_mAnimations.end()) {
+    Debug::log(LOG, "[hyprfocus] Calling onWindowFocus for animation {}",
+               *configValue);
     it->second->onWindowFocus(pWindow, PHANDLE);
+  }
 }
 
 void flashCurrentWindow(std::string) {
@@ -80,6 +83,7 @@ static void onActiveWindowChange(void *self, std::any data) {
     g_pPreviouslyFocusedWindow = PWINDOW;
 
   } catch (std::bad_any_cast &e) {
+  } catch (std::exception &e) {
     Debug::log(ERR, "[hyprfocus] Error: {}", e.what());
   }
 }
@@ -91,6 +95,7 @@ static void onMouseButton(void *self, std::any data) {
     g_bMouseWasPressed = PWLRMOUSEBUTTONEVENT->state == WLR_BUTTON_PRESSED;
 
   } catch (std::bad_any_cast &e) {
+  } catch (std::exception &e) {
     Debug::log(ERR, "[hyprfocus] Error: {}", e.what());
   }
 }
