@@ -13,9 +13,11 @@ void CFlash::init(HANDLE pHandle, std::string animationName) {
 void CFlash::onWindowFocus(CWindow *pWindow, HANDLE pHandle) {
   IFocusAnimation::onWindowFocus(pWindow, pHandle);
 
-  pWindow->m_fAlpha =
-      **(Hyprlang::FLOAT *const *)getConfigValue(pHandle, "flash_opacity")
-            ->getDataStaticPtr();
+  static auto *const flash_opacity =
+      (Hyprlang::FLOAT *const *)getConfigValue(pHandle, "flash_opacity")
+          ->getDataStaticPtr();
+  Debug::log(LOG, "[hyprfocus] Flash opacity: {}", **flash_opacity);
+  pWindow->m_fAlpha = **flash_opacity;
   pWindow->m_fAlpha.setConfig(&m_sFocusInAnimConfig);
   pWindow->m_fAlpha.setCallbackOnEnd([this, pWindow, pHandle](void *) {
     // Make sure we restore to the active window opacity

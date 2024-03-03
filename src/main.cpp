@@ -91,6 +91,7 @@ static void onMouseButton(void *self, std::any data) {
     g_bMouseWasPressed = PWLRMOUSEBUTTONEVENT->state == WLR_BUTTON_PRESSED;
 
   } catch (std::bad_any_cast &e) {
+    Debug::log(ERR, "[hyprfocus] Error: {}", e.what());
   }
 }
 
@@ -117,17 +118,20 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
   }
 
   HyprlandAPI::reloadConfig();
+  Debug::log(LOG, "[hyprfocus] Reloaded config");
 
   HyprlandAPI::registerCallbackDynamic(
       PHANDLE, "activeWindow",
       [&](void *self, SCallbackInfo &info, std::any data) {
         onActiveWindowChange(self, data);
       });
+  Debug::log(LOG, "[hyprfocus] Registered active window change callback");
   HyprlandAPI::registerCallbackDynamic(
       PHANDLE, "mouseButton",
       [&](void *self, SCallbackInfo &info, std::any data) {
         onMouseButton(self, data);
       });
+  Debug::log(LOG, "[hyprfocus] Registered mouse button callback");
 
   return {"hyprfocus", "animate windows on focus", "Vortex", "2.0"};
 }
