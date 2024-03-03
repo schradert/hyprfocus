@@ -13,9 +13,12 @@ void CShrink::init(HANDLE pHandle, std::string animationName) {
 void CShrink::onWindowFocus(CWindow *pWindow, HANDLE pHandle) {
   std::string currentAnimStyle =
       pWindow->m_vRealSize.getConfig()->internalStyle;
+  Debug::log(LOG, "[hyprfocus] Current animation style: {}", currentAnimStyle);
   if ((currentAnimStyle == "popout" || currentAnimStyle == "popin") &&
-      pWindow->m_vRealSize.isBeingAnimated())
+      pWindow->m_vRealSize.isBeingAnimated()) {
+    Debug::log(LOG, "Shrink: Window is already being animated, skipping");
     return;
+  }
 
   IFocusAnimation::onWindowFocus(pWindow, pHandle);
 

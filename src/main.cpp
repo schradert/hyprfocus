@@ -83,6 +83,7 @@ static void onActiveWindowChange(void *self, std::any data) {
     g_pPreviouslyFocusedWindow = PWINDOW;
 
   } catch (std::bad_any_cast &e) {
+    Debug::log(ERR, "[hyprfocus] Cast Error: {}", e.what());
   } catch (std::exception &e) {
     Debug::log(ERR, "[hyprfocus] Error: {}", e.what());
   }
@@ -95,6 +96,7 @@ static void onMouseButton(void *self, std::any data) {
     g_bMouseWasPressed = PWLRMOUSEBUTTONEVENT->state == WLR_BUTTON_PRESSED;
 
   } catch (std::bad_any_cast &e) {
+    Debug::log(ERR, "[hyprfocus] Cast Error: {}", e.what());
   } catch (std::exception &e) {
     Debug::log(ERR, "[hyprfocus] Error: {}", e.what());
   }
