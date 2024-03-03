@@ -1,0 +1,12 @@
+[repository]
+name = "hyprfocus"
+authors = ["VortexCoyote, OakleyCord, vaxerski, DRAGONTOS"]
+
+[hyprfocus]
+description = "a focus animation plugin for Hyprland inspired by Flashfocus"
+authors = ["VortexCoyote, OakleyCord, vaxerski, DRAGONTOS"]
+output = "hyprfocus.so"
+build = [
+  "gcc -O2 -shared -fPIC --no-gnu-unique src/* -o hyprfocus.so -g `pkg-config --cflags pixman-1 libdrm hyprland` -std=c++2b",
+    "strip hyprfocus.so"
+]

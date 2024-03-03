@@ -1,5 +1,3 @@
-#pragma once
-
 #include "IFocusAnimation.hpp"
 
 class CFlash : public IFocusAnimation {

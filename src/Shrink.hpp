@@ -1,5 +1,3 @@
-#pragma once
-
 #include "IFocusAnimation.hpp"
 
 class CShrink : public IFocusAnimation {

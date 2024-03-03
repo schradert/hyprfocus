@@ -19,16 +19,14 @@ bool g_bMouseWasPressed = false;
 std::unordered_map<std::string, std::unique_ptr<IFocusAnimation>> g_mAnimations;
 
 void flashWindow(CWindow *pWindow) {
-  static auto *const PTYPE =
-      g_bMouseWasPressed
-          ? (Hyprlang::STRING *const *)HyprlandAPI::getConfigValue(
-                PHANDLE, "plugin:hyprfocus:mouse_focus_animation")
-                ->getDataStaticPtr()
-          : (Hyprlang::STRING *const *)HyprlandAPI::getConfigValue(
-                PHANDLE, "plugin:hyprfocus:keyboard_focus_animation")
-                ->getDataStaticPtr();
+  static auto *const configValue =
+      (Hyprlang::STRING const *)HyprlandAPI::getConfigValue(
+          PHANDLE, "plugin:hyprfocus:focus_animation")
+          ->getDataStaticPtr();
 
-  g_mAnimations[**PTYPE]->onWindowFocus(pWindow, PHANDLE);
+  auto it = g_mAnimations.find(*configValue);
+  if (it != g_mAnimations.end())
+    it->second->onWindowFocus(pWindow, PHANDLE);
 }
 
 void flashCurrentWindow(std::string) {
@@ -88,17 +86,14 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
 
   HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprfocus:enabled",
                               Hyprlang::INT{0});
-  HyprlandAPI::addConfigValue(PHANDLE,
-                              "plugin:hyprfocus:keyboard_focus_animation",
-                              Hyprlang::STRING{"flash"});
-  HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprfocus:mouse_focus_animation",
-                              Hyprlang::STRING{"flash"});
+  HyprlandAPI::addConfigValue(PHANDLE, "plugin:hyprfocus:focus_animation",
+                              Hyprlang::STRING("flash"));
 
   HyprlandAPI::addDispatcher(PHANDLE, "animatefocused", &flashCurrentWindow);
 
   g_mAnimations["flash"] = std::make_unique<CFlash>();
   g_mAnimations["shrink"] = std::make_unique<CShrink>();
-  g_mAnimations["nothing"] = std::make_unique<IFocusAnimation>();
+  g_mAnimations["none"] = std::make_unique<IFocusAnimation>();
 
   for (auto &[name, pAnimation] : g_mAnimations) {
     pAnimation->init(PHANDLE, name);
