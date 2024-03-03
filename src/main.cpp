@@ -21,19 +21,20 @@ std::unordered_map<std::string, std::unique_ptr<IFocusAnimation>> g_mAnimations;
 void flashWindow(CWindow *pWindow) {
   static auto *const PTYPE =
       g_bMouseWasPressed
-          ? (Hyprlang::STRING const *)HyprlandAPI::getConfigValue(
+          ? (Hyprlang::STRING *const *)HyprlandAPI::getConfigValue(
                 PHANDLE, "plugin:hyprfocus:mouse_focus_animation")
                 ->getDataStaticPtr()
-          : (Hyprlang::STRING const *)HyprlandAPI::getConfigValue(
+          : (Hyprlang::STRING *const *)HyprlandAPI::getConfigValue(
                 PHANDLE, "plugin:hyprfocus:keyboard_focus_animation")
                 ->getDataStaticPtr();
 
-  g_mAnimations[*PTYPE]->onWindowFocus(pWindow, PHANDLE);
+  g_mAnimations[**PTYPE]->onWindowFocus(pWindow, PHANDLE);
 }
 
 void flashCurrentWindow(std::string) {
   static auto *const PHYPRFOCUSENABLED =
-      HyprlandAPI::getConfigValue(PHANDLE, "plugin:hyprfocus:enabled")
+      (Hyprlang::INT *const *)HyprlandAPI::getConfigValue(
+          PHANDLE, "plugin:hyprfocus:enabled")
           ->getDataStaticPtr();
 
   if (!*PHYPRFOCUSENABLED)
@@ -49,7 +50,7 @@ static void onActiveWindowChange(void *self, std::any data) {
   try {
     auto *const PWINDOW = std::any_cast<CWindow *>(data);
     static auto *const PHYPRFOCUSENABLED =
-        (Hyprlang::INT const *)HyprlandAPI::getConfigValue(
+        (Hyprlang::INT *const *)HyprlandAPI::getConfigValue(
             PHANDLE, "plugin:hyprfocus:enabled")
             ->getDataStaticPtr();
 

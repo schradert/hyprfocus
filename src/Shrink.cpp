@@ -19,9 +19,9 @@ void CShrink::onWindowFocus(CWindow *pWindow, HANDLE pHandle) {
 
   IFocusAnimation::onWindowFocus(pWindow, pHandle);
 
-  const auto SHRINKPERCENTAGE =
-      *(Hyprlang::FLOAT const *)getConfigValue(pHandle, "shrink_percentage")
-           ->getDataStaticPtr();
+  static auto *const SHRINKPERCENTAGE =
+      (Hyprlang::FLOAT *const *)getConfigValue(pHandle, "shrink_percentage")
+          ->getDataStaticPtr();
 
   pWindow->m_vRealSize.setConfig(&m_sFocusOutAnimConfig);
   pWindow->m_vRealPosition.setConfig(&m_sFocusOutAnimConfig);
@@ -29,7 +29,7 @@ void CShrink::onWindowFocus(CWindow *pWindow, HANDLE pHandle) {
   m_sShrinkAnimation.registerVar();
   m_sShrinkAnimation.create(AVARTYPE_FLOAT, 1.0f, &m_sFocusInAnimConfig,
                             pWindow, AVARDAMAGE_ENTIRE);
-  m_sShrinkAnimation = SHRINKPERCENTAGE;
+  m_sShrinkAnimation = **SHRINKPERCENTAGE;
 
   m_sShrinkAnimation.setUpdateCallback([this, pWindow](void *pShrinkAnimation) {
     const auto GOALPOS = pWindow->m_vRealPosition.goalv();
