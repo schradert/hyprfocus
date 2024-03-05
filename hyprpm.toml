@@ -1,10 +1,10 @@
 [repository]
 name = "hyprfocus"
-authors = ["VortexCoyote, OakleyCord, vaxerski, DRAGONTOS"]
+authors = ["VortexCoyote, OakleyCord, vaxerski, DRAGONTOS, pyt0xic"]
 
 [hyprfocus]
-description = "a focus animation plugin for Hyprland inspired by Flashfocus"
-authors = ["VortexCoyote, OakleyCord, vaxerski, DRAGONTOS"]
+description = "a focus animation plugin for Hyprland inspired by Flashfocus (pyt0xic fork)"
+authors = ["VortexCoyote, OakleyCord, vaxerski, DRAGONTOS, pyt0xic"]
 output = "hyprfocus.so"
 build = [
     "make all"
