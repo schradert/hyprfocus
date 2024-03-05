@@ -1,5 +1,5 @@
 #include "Flash.hpp"
-#include "globals.hpp"
+#include "Globals.hpp"
 
 #include <hyprland/src/Compositor.hpp>
 #include <hyprland/src/Window.hpp>

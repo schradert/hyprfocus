@@ -1,6 +1,6 @@
 #define WLR_USE_UNSTABLE
 
-#include "globals.hpp"
+#include "Globals.hpp"
 #include <hyprland/src/plugins/PluginAPI.hpp>
 
 #include <hyprland/src/debug/Log.hpp>

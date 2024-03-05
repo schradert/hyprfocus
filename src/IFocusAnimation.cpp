@@ -1,6 +1,5 @@
 #include "IFocusAnimation.hpp"
-#include "globals.hpp"
-#include "log.hpp"
+#include "Globals.hpp"
 
 #include <hyprland/src/plugins/PluginAPI.hpp>
 #include <hyprlang.hpp>
