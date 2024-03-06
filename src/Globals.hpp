@@ -12,11 +12,11 @@ inline float g_fOutSpeed;
 // General
 inline HANDLE PHANDLE = nullptr;
 
-inline std::string g_sAnimationType;
+// inline std::string g_sAnimationType;
 
 // Flash
-inline float g_fFlashOpacity;
-inline float g_fActiveOpacity;
+// inline float g_fFlashOpacity;
+// inline float g_fActiveOpacity;
 
 // Shrink
-inline float g_fShrinkPercentage;
+// inline float g_fShrinkPercentage;

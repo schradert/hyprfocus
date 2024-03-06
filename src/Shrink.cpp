@@ -13,11 +13,11 @@ void CShrink::init(HANDLE pHandle, std::string animationName) {
 
 void CShrink::setup(HANDLE pHandle, std::string animationName) {
   IFocusAnimation::setup(pHandle, animationName);
-  static const auto *shrinkPercentage =
-      (Hyprlang::FLOAT *const *)(getConfigValue(pHandle, "shrink_percentage")
-                                     ->getDataStaticPtr());
-  g_fShrinkPercentage = **shrinkPercentage;
-  hyprfocus_log(LOG, "Shrink percentage: {}", g_fShrinkPercentage);
+  // static const auto *shrinkPercentage =
+  //     (Hyprlang::FLOAT *const *)(getConfigValue(pHandle, "shrink_percentage")
+  //                                    ->getDataStaticPtr());
+  // g_fShrinkPercentage = **shrinkPercentage;
+  // hyprfocus_log(LOG, "Shrink percentage: {}", g_fShrinkPercentage);
 }
 
 void CShrink::onWindowFocus(CWindow *pWindow, HANDLE pHandle) {
@@ -38,7 +38,11 @@ void CShrink::onWindowFocus(CWindow *pWindow, HANDLE pHandle) {
   m_sShrinkAnimation.registerVar();
   m_sShrinkAnimation.create(AVARTYPE_FLOAT, 1.0f, &m_sFocusInAnimConfig,
                             pWindow, AVARDAMAGE_ENTIRE);
-  m_sShrinkAnimation = g_fShrinkPercentage;
+  static const auto *shrinkPercentage =
+      (Hyprlang::FLOAT *const *)(getConfigValue(pHandle, "shrink_percentage")
+                                     ->getDataStaticPtr());
+  hyprfocus_log(LOG, "Shrink percentage: {}", **shrinkPercentage);
+  m_sShrinkAnimation = **shrinkPercentage;
 
   m_sShrinkAnimation.setUpdateCallback([this, pWindow](void *pShrinkAnimation) {
     const auto GOALPOS = pWindow->m_vRealPosition.goalv();

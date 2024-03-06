@@ -18,13 +18,18 @@ bool g_bMouseWasPressed = false;
 std::unordered_map<std::string, std::unique_ptr<IFocusAnimation>> g_mAnimations;
 
 void flashWindow(CWindow *pWindow) {
+  static const auto *focusAnimation =
+      (Hyprlang::STRING const *)(HyprlandAPI::getConfigValue(
+                                     PHANDLE,
+                                     "plugin:hyprfocus:focus_animation")
+                                     ->getDataStaticPtr());
   hyprfocus_log(LOG, "Flashing window");
-  hyprfocus_log(LOG, "Animation: {}", g_sAnimationType);
+  hyprfocus_log(LOG, "Animation: {}", *focusAnimation);
 
-  auto it = g_mAnimations.find(g_sAnimationType);
+  auto it = g_mAnimations.find(*focusAnimation);
   if (it != g_mAnimations.end()) {
     hyprfocus_log(LOG, "Calling onWindowFocus for animation {}",
-                  g_sAnimationType);
+                  *focusAnimation);
     it->second->onWindowFocus(pWindow, PHANDLE);
   }
 }
@@ -122,12 +127,12 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
   hyprfocus_log(LOG, "Reloaded config");
 
   // Declare globals
-  static const auto *focusAnimation =
-      (Hyprlang::STRING const *)(HyprlandAPI::getConfigValue(
-                                     PHANDLE,
-                                     "plugin:hyprfocus:focus_animation")
-                                     ->getDataStaticPtr());
-  g_sAnimationType = *focusAnimation;
+  // static const auto *focusAnimation =
+  //     (Hyprlang::STRING const *)(HyprlandAPI::getConfigValue(
+  //                                    PHANDLE,
+  //                                    "plugin:hyprfocus:focus_animation")
+  //                                    ->getDataStaticPtr());
+  // g_sAnimationType = *focusAnimation;
 
   // Setup animations
   for (auto &[name, pAnimation] : g_mAnimations) {
