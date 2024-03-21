@@ -91,7 +91,8 @@ static void onMouseButton(void *self, std::any data) {
   try {
     auto *const PWLRMOUSEBUTTONEVENT =
         std::any_cast<wlr_pointer_button_event *>(data);
-    g_bMouseWasPressed = PWLRMOUSEBUTTONEVENT->state == WLR_BUTTON_PRESSED;
+    g_bMouseWasPressed =
+        PWLRMOUSEBUTTONEVENT->state == WL_POINTER_BUTTON_STATE_PRESSED;
 
   } catch (std::bad_any_cast &e) {
     hyprfocus_log(ERR, "Cast Error: {}", e.what());
