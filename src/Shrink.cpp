@@ -1,6 +1,6 @@
 #include "Shrink.hpp"
 
-#include "Globals.hpp"
+#include "Log.hpp"
 #include <hyprland/src/Compositor.hpp>
 #include <hyprland/src/Window.hpp>
 #include <hyprland/src/managers/AnimationManager.hpp>
@@ -12,7 +12,7 @@ void CShrink::init(HANDLE pHandle, std::string animationName) {
 }
 
 void CShrink::setup(HANDLE pHandle, std::string animationName) {
-  IFocusAnimation::setup(pHandle, animationName);
+  // IFocusAnimation::setup(pHandle, animationName);
   // static const auto *shrinkPercentage =
   //     (Hyprlang::FLOAT *const *)(getConfigValue(pHandle, "shrink_percentage")
   //                                    ->getDataStaticPtr());
@@ -26,7 +26,7 @@ void CShrink::onWindowFocus(CWindow *pWindow, HANDLE pHandle) {
   hyprfocus_log(LOG, "Current animation style: {}", currentAnimStyle);
   if ((currentAnimStyle == "popout" || currentAnimStyle == "popin") &&
       pWindow->m_vRealSize.isBeingAnimated()) {
-    Debug::log(LOG, "Shrink: Window is already being animated, skipping");
+    hyprfocus_log(LOG, "Shrink: Window is already being animated, skipping");
     return;
   }
 

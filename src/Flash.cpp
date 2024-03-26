@@ -12,6 +12,7 @@ void CFlash::init(HANDLE pHandle, std::string animationName) {
 }
 
 void CFlash::setup(HANDLE pHandle, std::string animationName) {
+  // IFocusAnimation::setup(pHandle, animationName);
   // static const auto *flash_opacity =
   //     (Hyprlang::FLOAT *const *)(getConfigValue(pHandle, "flash_opacity")
   //                                    ->getDataStaticPtr());

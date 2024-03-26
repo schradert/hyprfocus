@@ -18,7 +18,7 @@ shrink
 instructions based on [the official wiki](https://wiki.hyprland.org/Plugins/Using-Plugins/#compiling-official-plugins)
 
 ```
-hyprpm add https://github.com/hyprfocus
+hyprpm add https://github.com/pyt0xic/hyprfocus
 ```
 
 ## getting started
@@ -26,34 +26,35 @@ hyprpm add https://github.com/hyprfocus
 to start using hyprfocus, add this to your hyprland config:
 
 ```
-plugin:hyprfocus {
-    enabled = yes
-
-    focus_animation = flash
-
-    bezier = bezIn, 0.5,0.0,1.0,0.5
-    bezier = bezOut, 0.0,0.5,0.5,1.0
-
-    flash {
-        flash_opacity = 0.7
-
-        in_bezier = bezIn
-        in_speed = 0.5
-
-        out_bezier = bezOut
-        out_speed = 3
+    hyprfocus {
+        enabled = yes
+        animate_floating = yes
+        animate_workspacechange = yes
+        focus_animation = shrink
+        # Beziers for focus animations
+        bezier = bezIn, 0.5,0.0,1.0,0.5
+        bezier = bezOut, 0.0,0.5,0.5,1.0
+        bezier = overshot, 0.05, 0.9, 0.1, 1.05
+        bezier = smoothOut, 0.36, 0, 0.66, -0.56
+        bezier = smoothIn, 0.25, 1, 0.5, 1
+        bezier = realsmooth, 0.28,0.29,.69,1.08
+        # Flash settings
+        flash {
+            flash_opacity = 0.95
+            in_bezier = realsmooth
+            in_speed = 0.5
+            out_bezier = realsmooth
+            out_speed = 3
+        }
+        # Shrink settings
+        shrink {
+            shrink_percentage = 0.95
+            in_bezier = realsmooth
+            in_speed = 1
+            out_bezier = realsmooth
+            out_speed = 2
+        }
     }
-
-    shrink {
-        shrink_percentage = 0.8
-
-        in_bezier = bezIn
-        in_speed = 0.5
-
-        out_bezier = bezOut
-        out_speed = 3
-    }
-}
 ```
 
 ### plugin configuration
@@ -61,6 +62,10 @@ plugin:hyprfocus {
 `enabled` (yes/no) -> enable or disable the plugin
 
 `focus_animation` (flash/shrink/none) -> animation for keyboard-driven focus
+
+`animate_workspacechange` (yes/no) -> Whether to trigger the focus animation when changing workspaces
+
+`animate_floating` (yes/no) -> Whether to trigger the focus animation for floating windows
 
 ### animations configuration
 

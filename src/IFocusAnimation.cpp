@@ -34,7 +34,11 @@ void IFocusAnimation::init(HANDLE pHandle, std::string animationName) {
 }
 
 void IFocusAnimation::setup(HANDLE pHandle, std::string animationName) {
-  hyprfocus_log(LOG, "Setting up focus animation: {}", animationName);
+  // hyprfocus_log(LOG, "Setting up focus animation: {}", animationName);
+}
+
+void IFocusAnimation::onWindowFocus(CWindow *pWindow, HANDLE pHandle) {
+  hyprfocus_log(LOG, "Base callback for animation: {}", m_szAnimationName);
   static const auto *inBezier =
       (Hyprlang::STRING const *)(HyprlandAPI::getConfigValue(
                                      pHandle, configPrefix() + "in_bezier")
@@ -51,28 +55,17 @@ void IFocusAnimation::setup(HANDLE pHandle, std::string animationName) {
       (Hyprlang::FLOAT *const *)(HyprlandAPI::getConfigValue(
                                      pHandle, configPrefix() + "out_speed")
                                      ->getDataStaticPtr());
-  g_sInBezier = *inBezier;
-  g_fInSpeed = **inSpeed;
-  g_sOutBezier = *outBezier;
-  g_fOutSpeed = **outSpeed;
-  hyprfocus_log(LOG,
-                "In bezier: {}\nIn speed: {}\nOut bezier: {}\nOut speed: {}",
-                g_sInBezier, g_fInSpeed, g_sOutBezier, g_fOutSpeed);
-}
+  m_sFocusInAnimConfig.internalBezier = *inBezier;
+  m_sFocusInAnimConfig.internalSpeed = **inSpeed;
 
-void IFocusAnimation::onWindowFocus(CWindow *pWindow, HANDLE pHandle) {
-  hyprfocus_log(LOG, "Base callback for animation: {}", m_szAnimationName);
-  m_sFocusInAnimConfig.internalBezier = g_sInBezier;
-  m_sFocusInAnimConfig.internalSpeed = g_fInSpeed;
+  m_sFocusOutAnimConfig.internalBezier = *outBezier;
+  m_sFocusOutAnimConfig.internalSpeed = **outSpeed;
 
-  m_sFocusOutAnimConfig.internalBezier = g_sOutBezier;
-  m_sFocusOutAnimConfig.internalSpeed = g_fOutSpeed;
-
-  hyprfocus_log(
-      LOG, "In bezier: {}\nIn speed: {}\nOut bezier: {}\nOut speed: {}",
-      m_sFocusInAnimConfig.internalBezier, m_sFocusInAnimConfig.internalSpeed,
-      m_sFocusOutAnimConfig.internalBezier,
-      m_sFocusOutAnimConfig.internalSpeed);
+  hyprfocus_log(LOG, "In bezier: {} In speed: {} Out bezier: {} Out speed: {}",
+                m_sFocusInAnimConfig.internalBezier,
+                m_sFocusInAnimConfig.internalSpeed,
+                m_sFocusOutAnimConfig.internalBezier,
+                m_sFocusOutAnimConfig.internalSpeed);
 }
 
 void IFocusAnimation::addConfigValue(HANDLE pHandle, std::string name,

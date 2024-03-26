@@ -8,7 +8,7 @@ authors = ["VortexCoyote, OakleyCord, vaxerski, DRAGONTOS, pyt0xic"]
 output = "hyprfocus.so"
 commit_pins = [
     ["1c460e98f870676b15871fe4e5bfeb1a32a3d6d8", "2af0c1e87e3cdcef3c8f9c7def918982312d0b75"],
-    ["c5e28ebcfe00a510922779b2c568cfa52a317445", ""]
+    ["c5e28ebcfe00a510922779b2c568cfa52a317445", "c5e28ebcfe00a510922779b2c568cfa52a317445"]
 ]
 build = [
     "make all"
