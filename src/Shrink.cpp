@@ -2,7 +2,7 @@
 
 #include "Log.hpp"
 #include <hyprland/src/Compositor.hpp>
-#include <hyprland/src/Window.hpp>
+#include <hyprland/src/desktop/Window.hpp>
 #include <hyprland/src/managers/AnimationManager.hpp>
 #include <hyprland/src/plugins/PluginAPI.hpp>
 
