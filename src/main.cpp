@@ -24,7 +24,7 @@ static bool OnSameWorkspace(CWindow *pWindow1, CWindow *pWindow2) {
     return true;
   } else if (pWindow1 == nullptr || pWindow2 == nullptr) {
     return false;
-  } else if (pWindow1->m_iWorkspaceID == pWindow2->m_iWorkspaceID) {
+  } else if (pWindow1->workspaceID() == pWindow2->workspaceID()) {
     return true;
   } else {
     return false;
