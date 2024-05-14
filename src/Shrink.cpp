@@ -36,8 +36,7 @@ void CShrink::onWindowFocus(CWindow *pWindow, HANDLE pHandle) {
   pWindow->m_vRealPosition.setConfig(&m_sFocusOutAnimConfig);
 
   m_sShrinkAnimation.registerVar();
-  m_sShrinkAnimation.create(1.0f, &m_sFocusInAnimConfig, pWindow,
-                            AVARDAMAGE_ENTIRE);
+  m_sShrinkAnimation.create(1.0f, &m_sFocusInAnimConfig, AVARDAMAGE_ENTIRE);
   static const auto *shrinkPercentage =
       (Hyprlang::FLOAT *const *)(getConfigValue(pHandle, "shrink_percentage")
                                      ->getDataStaticPtr());
