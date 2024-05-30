@@ -13,13 +13,13 @@
 #include "Flash.hpp"
 #include "Shrink.hpp"
 
-CWindow *g_pPreviouslyFocusedWindow = nullptr;
+PHLWINDOW g_pPreviouslyFocusedWindow = nullptr;
 bool g_bMouseWasPressed = false;
 bool g_bWorkspaceChanged = false;
 
 std::unordered_map<std::string, std::unique_ptr<IFocusAnimation>> g_mAnimations;
 
-static bool OnSameWorkspace(CWindow *pWindow1, CWindow *pWindow2) {
+static bool OnSameWorkspace(PHLWINDOW pWindow1, PHLWINDOW pWindow2) {
   if (pWindow1 == pWindow2) {
     return true;
   } else if (pWindow1 == nullptr || pWindow2 == nullptr) {
@@ -31,7 +31,7 @@ static bool OnSameWorkspace(CWindow *pWindow1, CWindow *pWindow2) {
   }
 }
 
-void flashWindow(CWindow *pWindow) {
+void flashWindow(PHLWINDOW pWindow) {
   // static const Hyprlang::STRING *focusAnimation = nullptr;
   // if (g_bMouseWasPressed == true) {
   //   hyprfocus_log(LOG, "Mouse was pressed");
@@ -85,7 +85,7 @@ void flashCurrentWindow(std::string) {
 static void onActiveWindowChange(void *self, std::any data) {
   try {
     hyprfocus_log(LOG, "Active window changed");
-    auto *const PWINDOW = std::any_cast<CWindow *>(data);
+    auto const PWINDOW = std::any_cast<PHLWINDOW>(data);
     static auto *const PHYPRFOCUSENABLED =
         (Hyprlang::INT *const *)HyprlandAPI::getConfigValue(
             PHANDLE, "plugin:hyprfocus:enabled")
@@ -184,14 +184,14 @@ APICALL EXPORT PLUGIN_DESCRIPTION_INFO PLUGIN_INIT(HANDLE handle) {
   hyprfocus_log(LOG, "Reloaded config");
 
   // Register callbacks
-  HyprlandAPI::registerCallbackDynamic(
+  static auto P1 = HyprlandAPI::registerCallbackDynamic(
       PHANDLE, "activeWindow",
       [&](void *self, SCallbackInfo &info, std::any data) {
         onActiveWindowChange(self, data);
       });
   hyprfocus_log(LOG, "Registered active window change callback");
 
-  HyprlandAPI::registerCallbackDynamic(
+  static auto P2 = HyprlandAPI::registerCallbackDynamic(
       PHANDLE, "mouseButton",
       [&](void *self, SCallbackInfo &info, std::any data) {
         onMouseButton(self, data);
