@@ -37,5 +37,9 @@
 # hyprland
 hyprland/
 
+# Build directories
+cmake/
+build/
+
 # Misc
 compile_commands.json

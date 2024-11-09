@@ -1,11 +1,11 @@
 SOURCE_FILES=$(wildcard src/*.cpp)
 
 all:
-	$(CXX) -O2 -shared -fPIC --no-gnu-unique $(SOURCE_FILES)  -o hyprfocus.so `pkg-config --cflags pixman-1 libdrm hyprland` -std=c++2b
+	$(CXX) -shared -fPIC --no-gnu-unique $(SOURCE_FILES) -o hyprfocus.so -g `pkg-config --cflags pixman-1 libdrm hyprland pangocairo libinput libudev wayland-server xkbcommon` -std=c++2b -O2
 	strip hyprfocus.so
 
 debug:
-	$(CXX) -O2 -shared -fPIC --no-gnu-unique $(SOURCE_FILES)  -o hyprfocus.so `pkg-config --cflags pixman-1 libdrm hyprland` -std=c++2b
+	$(CXX) -shared -fPIC --no-gnu-unique $(SOURCE_FILES) -o hyprfocus.so -g `pkg-config --cflags pixman-1 libdrm hyprland pangocairo libinput libudev wayland-server xkbcommon` -std=c++2b -O2
 
 clean:
 	rm ./hyprfocus.so
